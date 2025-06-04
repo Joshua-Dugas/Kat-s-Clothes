@@ -59,7 +59,7 @@
 <script>
     async function fetchOuterwear() {
         try {
-            const response = await fetch("http://localhost:3000/api/outerwear");
+            const response = await fetch("/api/outerwear");
             if (!response.ok) throw new Error("Network response was not ok");
             const data = await response.json();
 
@@ -112,7 +112,7 @@
     async function deleteOuterwear(id) {
         if (!confirm("Are you sure you want to delete this Outerwear?")) return;
         try {
-            const response = await fetch(`http://localhost:3000/api/outerwear/${id}`, {
+            const response = await fetch(`/api/outerwear/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) {
@@ -143,7 +143,7 @@
         };
 
         try {
-            const response = await fetch("http://localhost:3000/api/outerwear", {
+            const response = await fetch("/api/outerwear", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(outerwearData),
