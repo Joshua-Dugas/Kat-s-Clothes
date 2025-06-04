@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tops Inventory Manager</title>
+    <link rel="stylesheet" href="/styles/managerStyle.css">
+</head>
+<body>
+<h1>Tops Inventory</h1>
+<a href="/" class="homeButton">HOME </a>
+
+<!-- Add Top Form -->
+<div class="form-container">
+    <h2>Add New Top</h2>
+    <form id="addTopForm">
+        <label for="style">Style:</label>
+        <input type="text" id="style" name="style" required><br>
+        <label for="brand">Brand:</label>
+        <input type="text" id="brand" name="brand" required><br>
+        <label for="color">Color:</label>
+        <input type="text" id="color" name="color" required><br>
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option value="Men">Men</option>
+            <option value="Women">Women</option>
+            <option value="Unisex">Unisex</option>
+        </select><br>
+        <label for="size">Size:</label>
+        <input type="number" id="size" name="size" min="1" required><br>
+        <label for="list_price">List Price:</label>
+        <input type="number" id="list_price" name="list_price" step="0.01" min="0" required><br>
+        <label for="item_cost">Item Cost:</label>
+        <input type="number" id="item_cost" name="item_cost" step="0.01" min="0" required><br>
+        <label for="is_sold">Sold:</label>
+        <input type="checkbox" id="is_sold" name="is_sold"><br>
+        <button type="submit">Add Top</button>
+    </form>
+</div>
+
+<!-- Tops Table -->
+<table id="topsTable">
+    <thead>
+    <tr id="tableHeaders"></tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+    async function fetchTops() {
+        try {
+            const response = await fetch("http://localhost:3000/api/tops");
+            if (!response.ok) throw new Error("Network response was not ok");
+            const data = await response.json();
+            console.log(data);
+
+            if (data.length === 0) {
+                document.getElementById("tableBody").innerHTML =
+                    '<tr><td colspan="100%">No data available</td></tr>';
+                return;
+            }
+
+            // Get column headers from the first row's keys
+            const headers = Object.keys(data[0]);
+            const headerRow = document.getElementById("tableHeaders");
+            headerRow.innerHTML = ""; // Clear existing headers
+            headers.forEach((header) => {
+                const th = document.createElement("th");
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            // Add a header for the delete button
+            const deleteTh = document.createElement("th");
+            deleteTh.textContent = "Action";
+            headerRow.appendChild(deleteTh);
+
+            // Populate table rows
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = ""; // Clear existing rows
+            data.forEach((row) => {
+                const tr = document.createElement("tr");
+                headers.forEach((header) => {
+                    const td = document.createElement("td");
+                    td.textContent = row[header] ?? "N/A";
+                    tr.appendChild(td);
+                });
+                // Add delete button
+                const deleteTd = document.createElement("td");
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.onclick = () => deleteTop(row.id);
+                deleteTd.appendChild(deleteButton);
+                tr.appendChild(deleteTd);
+                tableBody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            document.getElementById("tableBody").innerHTML =
+                '<tr><td colspan="100%">Error loading data</td></tr>';
+        }
+    }
+
+    async function deleteTop(id) {
+        if (!confirm("Are you sure you want to delete this top?")) return;
+        try {
+            const response = await fetch(`http://localhost:3000/api/tops/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to delete tops");
+            }
+            alert("Top deleted successfully");
+            fetchTops(); // Refresh the table
+        } catch (error) {
+            console.error("Error deleting top:", error);
+            alert("Error deleting top: " + error.message);
+        }
+    }
+
+    // Handle form submission to add a new top
+    document.getElementById("addTopForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const topData = {
+            name: formData.get("style"),
+            brand: formData.get("brand"),
+            color: formData.get("color"),
+            gender: formData.get("gender"),
+            size: parseInt(formData.get("size")),
+            list_price: parseFloat(formData.get("list_price")),
+            item_cost: parseFloat(formData.get("item_cost")),
+            is_sold: formData.get("is_sold") === "on",
+        };
+
+        try {
+            const response = await fetch("http://localhost:3000/api/tops", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(topData),
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to add top");
+            }
+            alert("Top added successfully");
+            e.target.reset(); // Clear the form
+            fetchTops(); // Refresh the table
+        } catch (error) {
+            console.error("Error adding top:", error);
+            alert("Error adding top: " + error.message);
+        }
+    });
+
+    // Fetch data when the page loads
+    window.onload = fetchTops;
+</script>
+</body>
+</html>
