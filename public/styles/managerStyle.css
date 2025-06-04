@@ -33,11 +33,11 @@ button:hover {
     background-color: #cc0000;
 }
 .form-container {
-    width: 80%;
+    width: 40%;
     margin: 20px auto;
     padding: 10px;
     border: 1px solid #ddd;
-    background-color: #f9f9f9;
+    backdrop-filter: blur(10px);
 }
 .form-container label {
     display: inline-block;
@@ -57,6 +57,7 @@ button:hover {
 
 #tableBody {
     color: lawngreen;
+    backdrop-filter: blur(10px);
 }
 
 .homeButton {
@@ -69,4 +70,46 @@ button:hover {
 }
 .homeButton:hover {
     background-color: #0056b3;
+}
+
+/* Vertical navbar styling */
+
+.navbutton {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.navbar {
+    width: 100px;
+    background-color: transparent;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.navbar li {
+    margin: 10px 0;
+}
+
+.navbar a {
+    display: block;
+    padding: 15px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #555;
 }

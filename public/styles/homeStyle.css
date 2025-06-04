@@ -5,6 +5,10 @@ body {
     min-height: 100vh;
 }
 
+h2, h1 {
+    text-align: center;
+}
+
 .button {
     display: inline-block;
     padding: 10px 20px;
@@ -12,4 +16,36 @@ body {
     color: white;
     text-decoration: none;
     border-radius: 5px;
+}
+
+/* Vertical navbar styling */
+.navbar {
+    width: 100px;
+    background-color: transparent;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.navbar li {
+    margin: 10px 0;
+}
+
+.navbar a {
+    display: block;
+    padding: 15px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #555;
 }
