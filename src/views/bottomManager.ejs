@@ -37,7 +37,7 @@
             <option value="Unisex">Unisex</option>
         </select><br>
         <label for="size">Size:</label>
-        <input type="number" id="size" name="size" min="1" required><br>
+        <input type="text" id="size" name="size" min="1" required><br>
         <label for="list_price">List Price:</label>
         <input type="number" id="list_price" name="list_price" step="0.01" min="0" required><br>
         <label for="item_cost">Item Cost:</label>
@@ -78,10 +78,13 @@
                 th.textContent = header;
                 headerRow.appendChild(th);
             });
-            // Add a header for the delete button
+            // Add a header for actions
             const deleteTh = document.createElement("th");
-            deleteTh.textContent = "Action";
+            deleteTh.textContent = "Delete";
             headerRow.appendChild(deleteTh);
+            const updateTh = document.createElement("th");
+            updateTh.textContent = "Update Sold Status";
+            headerRow.appendChild(updateTh);
 
             // Populate table rows
             const tableBody = document.getElementById("tableBody");
@@ -101,6 +104,30 @@
                 deleteTd.appendChild(deleteButton);
                 tr.appendChild(deleteTd);
                 tableBody.appendChild(tr);
+
+                // Add update form for is_sold
+                const updateTd = document.createElement("td");
+                const select = document.createElement("select");
+                select.id = `is_sold_${row.id}`;
+                const optionNotSold = document.createElement("option");
+                optionNotSold.value = "false";
+                optionNotSold.textContent = "Not Sold";
+                if (!row.is_sold) optionNotSold.selected = true;
+                const optionSold = document.createElement("option");
+                optionSold.value = "true";
+                optionSold.textContent = "Sold";
+                if (row.is_sold) optionSold.selected = true;
+                select.appendChild(optionNotSold);
+                select.appendChild(optionSold);
+
+                const updateButton = document.createElement("button");
+                updateButton.textContent = "Update";
+                updateButton.onclick = () => updateBottomStatus(row.id);
+                updateTd.appendChild(select);
+                updateTd.appendChild(updateButton);
+                tr.appendChild(updateTd);
+
+                tableBody.appendChild(tr);
             });
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -108,6 +135,28 @@
                 '<tr><td colspan="100%">Error loading data</td></tr>';
         }
     }
+
+    async function updateBottomStatus(id) {
+        const select = document.getElementById(`is_sold_${id}`);
+        const is_sold = select.value === "true";
+        try {
+            const response = await fetch(`/api/bottoms/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ is_sold }),
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to update bottom status");
+            }
+            alert("Bottom status updated successfully");
+            fetchBottoms(); // Refresh the table
+        } catch (error) {
+            console.error("Error updating bottom status:", error);
+            alert("Error updating bottom status: " + error.message);
+        }
+    }
+
 
     async function deleteBottom(id) {
         if (!confirm("Are you sure you want to delete this Bottom?")) return;
@@ -136,7 +185,7 @@
             brand: formData.get("brand"),
             color: formData.get("color"),
             gender: formData.get("gender"),
-            size: parseInt(formData.get("size")),
+            size: formData.get("size"),
             list_price: parseFloat(formData.get("list_price")),
             item_cost: parseFloat(formData.get("item_cost")),
             is_sold: formData.get("is_sold") === "on",

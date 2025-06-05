@@ -36,6 +36,33 @@ router.post("/", async (req, res) => {
     }
 });
 
+// Update is_sold status for a top by ID
+router.patch("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { is_sold } = req.body;
+
+        // Validate is_sold
+        if (typeof is_sold !== "boolean") {
+            return res.status(400).json({ error: "is_sold must be a boolean value" });
+        }
+
+        const result = await sql`
+            UPDATE tops
+            SET is_sold = ${is_sold}
+            WHERE id = ${id}
+            RETURNING *
+        `;
+        if (result.length === 0) {
+            return res.status(404).json({ error: "Top not found" });
+        }
+        res.json({ message: "Top status updated successfully", updatedTop: result[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    }
+});
+
 // Delete a top by ID
 router.delete("/:id", async (req, res) => {
     try {

@@ -33,7 +33,7 @@ button:hover {
     background-color: #cc0000;
 }
 .form-container {
-    width: 40%;
+    width: 30%;
     margin: 20px auto;
     padding: 10px;
     border: 1px solid #ddd;
@@ -56,7 +56,7 @@ button:hover {
 }
 
 #tableBody {
-    color: lawngreen;
+    color: black;
     backdrop-filter: blur(10px);
 }
 
@@ -113,3 +113,11 @@ button:hover {
 .navbar a:hover {
     background-color: #555;
 }
+
+#is_sold_btn{
+    background-color: #4CAF50;
+    color: white;
+    margin: 20px auto;
+    padding: 10px;
+}
+

@@ -80,8 +80,11 @@
             });
             // Add a header for the delete button
             const deleteTh = document.createElement("th");
-            deleteTh.textContent = "Action";
+            deleteTh.textContent = "Delete";
             headerRow.appendChild(deleteTh);
+            const updateTh = document.createElement("th");
+            updateTh.textContent = "Update Sold Status";
+            headerRow.appendChild(updateTh);
 
             // Populate table rows
             const tableBody = document.getElementById("tableBody");
@@ -101,11 +104,56 @@
                 deleteTd.appendChild(deleteButton);
                 tr.appendChild(deleteTd);
                 tableBody.appendChild(tr);
+
+                // Add update form for is_sold
+                const updateTd = document.createElement("td");
+                const select = document.createElement("select");
+                select.id = `is_sold_${row.id}`;
+                const optionNotSold = document.createElement("option");
+                optionNotSold.value = "false";
+                optionNotSold.textContent = "Not Sold";
+                if (!row.is_sold) optionNotSold.selected = true;
+                const optionSold = document.createElement("option");
+                optionSold.value = "true";
+                optionSold.textContent = "Sold";
+                if (row.is_sold) optionSold.selected = true;
+                select.appendChild(optionNotSold);
+                select.appendChild(optionSold);
+
+                const updateButton = document.createElement("button");
+                updateButton.textContent = "Update";
+                updateButton.onclick = () => updateShoeStatus(row.id);
+                updateTd.appendChild(select);
+                updateTd.appendChild(updateButton);
+                tr.appendChild(updateTd);
+
+                tableBody.appendChild(tr);
             });
         } catch (error) {
             console.error("Error fetching data:", error);
             document.getElementById("tableBody").innerHTML =
                 '<tr><td colspan="100%">Error loading data</td></tr>';
+        }
+    }
+
+    async function updateShoeStatus(id) {
+        const select = document.getElementById(`is_sold_${id}`);
+        const is_sold = select.value === "true";
+        try {
+            const response = await fetch(`/api/shoes/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ is_sold }),
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to update shoe status");
+            }
+            alert("Shoe status updated successfully");
+            fetchShoes(); // Refresh the table
+        } catch (error) {
+            console.error("Error updating shoe status:", error);
+            alert("Error updating shoe status: " + error.message);
         }
     }
 
