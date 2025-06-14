@@ -2,11 +2,16 @@
 
 Kat's clothes is a personal use website for managing inventory and financials for a clothing resale business. 
 
-Website Specifications:
+**Website Specifications:**
+
 Front end: HTML/EJS
+
 Web Framework: Express
+
 Runtime Env: Node
+
 Back end: Javascript
+
 Database: Remote Postgres Server
 
 Home page:
