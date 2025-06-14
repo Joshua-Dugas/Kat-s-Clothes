@@ -2,21 +2,117 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Kat's Clothes</title>
+    <title><%= title %></title>
     <link rel="stylesheet" href="/styles/homeStyle.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
-<h1>Kat's Clothes</h1>
+<h1><%= title %></h1>
 <h2>Where we find trash and sell it to you as 'clothes' at premium prices</h2>
 <nav class="navbar">
-<ul>
-    <li><a href="/shoeManager" class="button">Shoes</a></li>
-    <li><a href="/topManager" class="button">Tops</a></li>
-    <li><a href="/bottomManager" class="button">Bottoms</a></li>
-    <li><a href="/hatManager" class="button">Hats</a></li>
-    <li><a href="/outerWearManager" class="button">Outerwear</a></li>
-</ul>
+    <ul>
+        <li><a href="/shoeManager" class="button">Shoes</a></li>
+        <li><a href="/topManager" class="button">Tops</a></li>
+        <li><a href="/bottomManager" class="button">Bottoms</a></li>
+        <li><a href="/hatManager" class="button">Hats</a></li>
+        <li><a href="/outerWearManager" class="button">Outerwear</a></li>
+    </ul>
 </nav>
+
+<section class="dashboard">
+    <h3>Kat's Dashboard</h3>
+    <% if (typeof error !== 'undefined') { %>
+        <p style="color: red;"><%= error %></p>
+    <% } %>
+    <div class="charts-container">
+        <div class="chart-wrapper">
+            <h4>Sales vs Expenses</h4>
+            <div class="chart-container">
+                <canvas id="salesVsExpensesChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-wrapper">
+            <h4>Items per Category</h4>
+            <div class="chart-container">
+                <canvas id="itemsPerCategoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Sales vs Expenses Chart
+        const salesCtx = document.getElementById('salesVsExpensesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Sales', 'Expenses'],
+                datasets: [{
+                    label: 'Financial Overview ($)',
+                    data: [<%= typeof sales !== 'undefined' ? sales : 0 %>, <%= typeof expenses !== 'undefined' ? expenses : 0 %>],
+                    backgroundColor: ['#36A2EB', '#FF6384'],
+                    borderColor: ['#36A2EB', '#FF6384'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount ($)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+
+        // Items per Category Chart
+        const itemsCtx = document.getElementById('itemsPerCategoryChart').getContext('2d');
+        new Chart(itemsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Hats', 'Bottoms', 'Outerwear', 'Shoes', 'Tops'],
+                datasets: [{
+                    label: 'Items per Category',
+                    data: [
+                        <%= itemCounts.hats || 0 %>,
+                        <%= itemCounts.bottoms || 0 %>,
+                        <%= itemCounts.outerwear || 0 %>,
+                        <%= itemCounts.shoes || 0 %>,
+                        <%= itemCounts.tops || 0 %>
+                    ],
+                    backgroundColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66'],
+                    borderColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Items'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+    });
+</script>
 </body>
 </html>
