@@ -43,7 +43,7 @@ exports.getHome = async (req, res) => {
         ]);
 
         console.log('Financial Query Result:', financialResult);
-        console.log('Counts Query Result:', countsResult); //
+        console.log('Counts Query Result:', countsResult);
 
         // Handle financial result
         const rows = Array.isArray(financialResult) ? financialResult : financialResult.rows;
@@ -51,6 +51,9 @@ exports.getHome = async (req, res) => {
         const { total_sales, total_expenses } = rows.length > 0
             ? rows[0]
             : { total_sales: 0, total_expenses: 0 };
+
+        // Calculate sales vs expenses difference
+        const salesVsExpensesDiff = Number(total_sales) - Number(total_expenses);
 
         // Handle counts result
         const countRows = Array.isArray(countsResult) ? countsResult : countsResult.rows;
@@ -71,6 +74,7 @@ exports.getHome = async (req, res) => {
         console.log('Variables to Render:', {
             sales: Number(total_sales),
             expenses: Number(total_expenses),
+            salesVsExpensesDiff,
             itemCounts
         });
 
@@ -78,6 +82,7 @@ exports.getHome = async (req, res) => {
             title: "Kat's Clothes",
             sales: Number(total_sales) || 0,
             expenses: Number(total_expenses) || 0,
+            salesVsExpensesDiff,
             itemCounts
         });
     } catch (err) {
@@ -86,6 +91,7 @@ exports.getHome = async (req, res) => {
             title: "Kat's Clothes",
             sales: 0,
             expenses: 0,
+            salesVsExpensesDiff: 0,
             itemCounts: { hats: 0, bottoms: 0, outerwear: 0, shoes: 0, tops: 0, misc: 0 },
             error: 'Failed to load dashboard data: ' + err.message
         });

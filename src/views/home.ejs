@@ -8,8 +8,11 @@
 </head>
 
 <body>
-<h1><%= title %></h1>
-<h2>Where we find trash and sell it to you as 'clothes' at premium prices</h2>
+<header class="big-header">
+    <h1><%= title %></h1>
+    <h2>Where we find trash and sell it to you as 'clothes' at premium prices</h2>
+    <div class="header-divider"></div>
+</header>
 <nav class="navbar">
     <ul>
         <li><a href="/shoeManager" class="button">Shoes</a></li>
@@ -17,15 +20,20 @@
         <li><a href="/bottomManager" class="button">Bottoms</a></li>
         <li><a href="/hatManager" class="button">Hats</a></li>
         <li><a href="/outerWearManager" class="button">Outerwear</a></li>
-        <li><a href="/miscManager" class="button"> Misc</a></li>
+        <li><a href="/miscManager" class="button">Misc</a></li>
     </ul>
 </nav>
 
+<!-- Dashboard -->
 <section class="dashboard">
     <h3>Kat's Dashboard</h3>
-    <% if (typeof error !== 'undefined') { %>
+    <% if (typeof error !== 'undefined' && error) { %>
         <p style="color: red;"><%= error %></p>
     <% } %>
+
+    <!-- Compute profitColor server-side -->
+    <% const profitColor = (typeof salesVsExpensesDiff !== 'undefined' && salesVsExpensesDiff !== null && Number(salesVsExpensesDiff) >= 0) ? '#66CC66' : '#FF6384'; %>
+
     <div class="charts-container">
         <div class="chart-wrapper">
             <h4>Sales vs Expenses</h4>
@@ -38,6 +46,16 @@
             <div class="chart-container">
                 <canvas id="itemsPerCategoryChart"></canvas>
             </div>
+        </div>
+        <div class="chart-wrapper">
+            <h4>Net Profit/Loss</h4>
+            <div class="chart-container">
+                <canvas id="netProfitLossChart"></canvas>
+            </div>
+            <p class="chart-difference">
+                Difference: $<%= typeof salesVsExpensesDiff !== 'undefined' && salesVsExpensesDiff !== null ? Math.abs(salesVsExpensesDiff).toFixed(2) : '0.00' %>
+                <%= typeof salesVsExpensesDiff !== 'undefined' && salesVsExpensesDiff !== null && salesVsExpensesDiff >= 0 ? '(Profit)' : '(Loss)' %>
+            </p>
         </div>
     </div>
 </section>
@@ -52,7 +70,10 @@
                 labels: ['Sales', 'Expenses'],
                 datasets: [{
                     label: 'Financial Overview ($)',
-                    data: [<%= typeof sales !== 'undefined' ? sales : 0 %>, <%= typeof expenses !== 'undefined' ? expenses : 0 %>],
+                    data: [
+                        <%= typeof sales !== 'undefined' && sales !== null ? sales : 0 %>,
+                        <%= typeof expenses !== 'undefined' && expenses !== null ? expenses : 0 %>
+                    ],
                     backgroundColor: ['#36A2EB', '#FF6384'],
                     borderColor: ['#36A2EB', '#FF6384'],
                     borderWidth: 1
@@ -85,15 +106,15 @@
                 datasets: [{
                     label: 'Items per Category',
                     data: [
-                        <%= itemCounts.hats || 0 %>,
-                        <%= itemCounts.bottoms || 0 %>,
-                        <%= itemCounts.outerwear || 0 %>,
-                        <%= itemCounts.shoes || 0 %>,
-                        <%= itemCounts.tops || 0 %>,
-                        <%= itemCounts.misc || 0 %>
+                        <%= typeof itemCounts !== 'undefined' && itemCounts !== null && itemCounts.hats !== undefined ? itemCounts.hats : 0 %>,
+                        <%= typeof itemCounts !== 'undefined' && itemCounts !== null && itemCounts.bottoms !== undefined ? itemCounts.bottoms : 0 %>,
+                        <%= typeof itemCounts !== 'undefined' && itemCounts !== null && itemCounts.outerwear !== undefined ? itemCounts.outerwear : 0 %>,
+                        <%= typeof itemCounts !== 'undefined' && itemCounts !== null && itemCounts.shoes !== undefined ? itemCounts.shoes : 0 %>,
+                        <%= typeof itemCounts !== 'undefined' && itemCounts !== null && itemCounts.tops !== undefined ? itemCounts.tops : 0 %>,
+                        <%= typeof itemCounts !== 'undefined' && itemCounts !== null && itemCounts.misc !== undefined ? itemCounts.misc : 0 %>
                     ],
-                    backgroundColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66'],
-                    borderColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66'],
+                    backgroundColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66', '#FF6B6B'],
+                    borderColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66', '#FF6B6B'],
                     borderWidth: 1
                 }]
             },
@@ -104,6 +125,38 @@
                         title: {
                             display: true,
                             text: 'Number of Items'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+
+        // Net Profit/Loss Chart
+        const profitCtx = document.getElementById('netProfitLossChart').getContext('2d');
+        new Chart(profitCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Net Profit/Loss'],
+                datasets: [{
+                    label: 'Net Profit/Loss ($)',
+                    data: [<%= typeof salesVsExpensesDiff !== 'undefined' && salesVsExpensesDiff !== null ? Number(salesVsExpensesDiff) : 0 %>],
+                    backgroundColor: ['<%= profitColor %>'],
+                    borderColor: ['<%= profitColor %>'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount ($)'
                         }
                     }
                 },
