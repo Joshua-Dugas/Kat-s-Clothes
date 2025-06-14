@@ -11,5 +11,6 @@ router.get('/topManager', homeController.getTops);
 router.get('/bottomManager', homeController.getBottoms);
 router.get('/hatManager', homeController.getHats);
 router.get('/outerwearManager', homeController.getOuterwear);
+router.get('/miscManager', homeController.getMisc);
 
 module.exports = router;

@@ -17,6 +17,7 @@
         <li><a href="/bottomManager" class="button">Bottoms</a></li>
         <li><a href="/hatManager" class="button">Hats</a></li>
         <li><a href="/outerWearManager" class="button">Outerwear</a></li>
+        <li><a href="/miscManager" class="button"> Misc</a></li>
     </ul>
 </nav>
 
@@ -80,7 +81,7 @@
         new Chart(itemsCtx, {
             type: 'bar',
             data: {
-                labels: ['Hats', 'Bottoms', 'Outerwear', 'Shoes', 'Tops'],
+                labels: ['Hats', 'Bottoms', 'Outerwear', 'Shoes', 'Tops', 'Misc'],
                 datasets: [{
                     label: 'Items per Category',
                     data: [
@@ -88,7 +89,8 @@
                         <%= itemCounts.bottoms || 0 %>,
                         <%= itemCounts.outerwear || 0 %>,
                         <%= itemCounts.shoes || 0 %>,
-                        <%= itemCounts.tops || 0 %>
+                        <%= itemCounts.tops || 0 %>,
+                        <%= itemCounts.misc || 0 %>
                     ],
                     backgroundColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66'],
                     borderColor: ['#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#66CC66'],

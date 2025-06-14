@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tops Inventory Manager</title>
+    <title>Miscellaneous Inventory Manager</title>
     <link rel="stylesheet" href="/styles/managerStyle.css">
 </head>
 <body>
-<h1>Tops Inventory</h1>
+<h1>Miscellaneous Inventory</h1>
 <nav class="navbar">
     <ul>
         <li><a href="/" class="navbutton">Home</a></li>
@@ -20,10 +20,10 @@
     </ul>
 </nav>
 
-<!-- Add Top Form -->
+<!-- Add Misc Form -->
 <div class="form-container">
-    <h2>Add New Top</h2>
-    <form id="addTopForm">
+    <h2>Add New Miscellaneous Item</h2>
+    <form id="addMiscForm">
         <label for="style">Style:</label>
         <input type="text" id="style" name="style" required><br>
         <label for="brand">Brand:</label>
@@ -45,12 +45,12 @@
         <input type="number" id="item_cost" name="item_cost" step="0.01" min="0" required><br>
         <label for="is_sold">Sold:</label>
         <input type="checkbox" id="is_sold" name="is_sold"><br>
-        <button type="submit">Add Top</button>
+        <button type="submit">Add Misc Item</button>
     </form>
 </div>
 
-<!-- Tops Table -->
-<table id="topsTable">
+<!-- Misc Table -->
+<table id="miscTable">
     <thead>
     <tr id="tableHeaders"></tr>
     </thead>
@@ -58,12 +58,11 @@
 </table>
 
 <script>
-    async function fetchTops() {
+    async function fetchMisc() {
         try {
-            const response = await fetch("/api/tops");
+            const response = await fetch("/api/misc");
             if (!response.ok) throw new Error("Network response was not ok");
             const data = await response.json();
-            console.log(data);
 
             if (data.length === 0) {
                 document.getElementById("tableBody").innerHTML =
@@ -102,7 +101,7 @@
                 const deleteTd = document.createElement("td");
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Delete";
-                deleteButton.onclick = () => deleteTop(row.id);
+                deleteButton.onclick = () => deleteMisc(row.id);
                 deleteTd.appendChild(deleteButton);
                 tr.appendChild(deleteTd);
                 tableBody.appendChild(tr);
@@ -124,7 +123,7 @@
 
                 const updateButton = document.createElement("button");
                 updateButton.textContent = "Update";
-                updateButton.onclick = () => updateTopStatus(row.id);
+                updateButton.onclick = () => updateMiscStatus(row.id);
                 updateTd.appendChild(select);
                 updateTd.appendChild(updateButton);
                 tr.appendChild(updateTd);
@@ -138,51 +137,51 @@
         }
     }
 
-    async function updateTopStatus(id) {
+    async function updateMiscStatus(id) {
         const select = document.getElementById(`is_sold_${id}`);
         const is_sold = select.value === "true";
         try {
-            const response = await fetch(`/api/tops/${id}`, {
+            const response = await fetch(`/api/misc/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ is_sold }),
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to update top status");
+                throw new Error(errorData.error || "Failed to update misc item status");
             }
-            alert("Top status updated successfully");
-            fetchTops(); // Refresh the table
+            alert("Misc item status updated successfully");
+            fetchMisc(); // Refresh the table
         } catch (error) {
-            console.error("Error updating top status:", error);
-            alert("Error updating top status: " + error.message);
+            console.error("Error updating misc item status:", error);
+            alert("Error updating misk item status: " + error.message);
         }
     }
 
 
-    async function deleteTop(id) {
-        if (!confirm("Are you sure you want to delete this top?")) return;
+    async function deleteMisc(id) {
+        if (!confirm("Are you sure you want to delete this Misc item?")) return;
         try {
-            const response = await fetch(`/api/tops/${id}`, {
+            const response = await fetch(`/api/misc/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to delete tops");
+                throw new Error(errorData.error || "Failed to delete Misc item");
             }
-            alert("Top deleted successfully");
-            fetchTops(); // Refresh the table
+            alert("Misc item deleted successfully");
+            fetchMisc(); // Refresh the table
         } catch (error) {
-            console.error("Error deleting top:", error);
-            alert("Error deleting top: " + error.message);
+            console.error("Error deleting Misc item:", error);
+            alert("Error deleting Misc item: " + error.message);
         }
     }
 
-    // Handle form submission to add a new top
-    document.getElementById("addTopForm").addEventListener("submit", async (e) => {
+    // Handle form submission to add a new misc item
+    document.getElementById("addMiscForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const topData = {
+        const miscData = {
             name: formData.get("style"),
             brand: formData.get("brand"),
             color: formData.get("color"),
@@ -194,26 +193,26 @@
         };
 
         try {
-            const response = await fetch("/api/tops", {
+            const response = await fetch("/api/misc", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(topData),
+                body: JSON.stringify(miscData),
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to add top");
+                throw new Error(errorData.error || "Failed to add Misc item");
             }
-            alert("Top added successfully");
+            alert("Misc item added successfully");
             e.target.reset(); // Clear the form
-            fetchTops(); // Refresh the table
+            fetchMisc(); // Refresh the table
         } catch (error) {
-            console.error("Error adding top:", error);
-            alert("Error adding top: " + error.message);
+            console.error("Error adding Misc item:", error);
+            alert("Error adding Misc item: " + error.message);
         }
     });
 
     // Fetch data when the page loads
-    window.onload = fetchTops;
+    window.onload = fetchMisc;
 </script>
 </body>
 </html>

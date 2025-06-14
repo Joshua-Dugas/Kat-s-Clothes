@@ -8,6 +8,7 @@ const topsRoutes = require('../src/routes/topsRoutes');
 const bottomsRoutes = require('../src/routes/bottomsRoutes');
 const hatsRoutes = require('../src/routes/hatsRoutes');
 const outerwearRoutes = require('../src/routes/outerwearRoutes');
+const miscRoutes = require('../src/routes/miscRoutes');
 
 dotenv.config();
 const app = express();
@@ -30,6 +31,8 @@ app.use('/api/tops', topsRoutes);
 app.use('/api/bottoms', bottomsRoutes);
 app.use('/api/hats', hatsRoutes);
 app.use('/api/outerwear', outerwearRoutes);
+app.use('/api/misc', miscRoutes);
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {

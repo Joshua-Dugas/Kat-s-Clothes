@@ -17,6 +17,8 @@ exports.getHome = async (req, res) => {
                 SELECT list_price, item_cost, is_sold FROM shoes
                 UNION ALL
                 SELECT list_price, item_cost, is_sold FROM tops
+                UNION ALL
+                SELECT list_price, item_cost, is_sold FROM misc
             ) AS all_items;
         `;
 
@@ -30,7 +32,9 @@ exports.getHome = async (req, res) => {
             UNION ALL
             SELECT 'shoes' AS table_name, COUNT(*) AS item_count FROM shoes
             UNION ALL
-            SELECT 'tops' AS table_name, COUNT(*) AS item_count FROM tops;
+            SELECT 'tops' AS table_name, COUNT(*) AS item_count FROM tops
+            UNION ALL
+            SELECT 'misc' AS table_name, COUNT(*) AS item_count FROM misc;
         `;
 
         const [financialResult, countsResult] = await Promise.all([
@@ -57,7 +61,8 @@ exports.getHome = async (req, res) => {
             bottoms: 0,
             outerwear: 0,
             shoes: 0,
-            tops: 0
+            tops: 0,
+            misc: 0
         };
         countRows.forEach(row => {
             itemCounts[row.table_name] = Number(row.item_count) || 0;
@@ -81,7 +86,7 @@ exports.getHome = async (req, res) => {
             title: "Kat's Clothes",
             sales: 0,
             expenses: 0,
-            itemCounts: { hats: 0, bottoms: 0, outerwear: 0, shoes: 0, tops: 0 },
+            itemCounts: { hats: 0, bottoms: 0, outerwear: 0, shoes: 0, tops: 0, misc: 0 },
             error: 'Failed to load dashboard data: ' + err.message
         });
     }
@@ -106,4 +111,8 @@ exports.getHats = (req, res) => {
 
 exports.getOuterwear = (req, res) => {
     res.render('outerwearManager', { title: 'Outerwear Manager' });
+};
+
+exports.getMisc = (req, res) => {
+    res.render('miscManager', { title: 'Misc Manager' });
 };
