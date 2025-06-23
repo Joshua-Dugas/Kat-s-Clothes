@@ -5,7 +5,7 @@ exports.getHome = async (req, res) => {
         // Query for sales and expenses
         const financialQuery = `
             SELECT
-                SUM(CASE WHEN is_sold THEN list_price - item_cost ELSE 0 END) AS total_sales,
+                SUM(CASE WHEN is_sold THEN list_price ELSE 0 END) AS total_sales,
                 SUM(item_cost) AS total_expenses
             FROM (
                 SELECT list_price, item_cost, is_sold FROM hats
@@ -99,6 +99,10 @@ exports.getHome = async (req, res) => {
 };
 
 //Routes
+exports.getCosting = (req, res) => {
+    res.render('costingManager', {title: 'Costing Manager'});
+}
+
 exports.getShoes = (req, res) => {
     res.render('shoeManager', { title: 'Shoe Manager' });
 };

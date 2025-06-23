@@ -2,12 +2,6 @@ const express = require("express");
 const router = express.Router();
 const sql = require("../../server/db");
 
-//TODO We need to be able to navigate to home page without interrupting the shoe router. Probably need to update the path of the shoe router stuff.
-//const shoesController = require('../controllers/shoesController');
-
-// Route for homepage
-//router.get('/', shoesController.getHome);
-
 // Fetch all shoes
 router.get("/", async (req, res) => {
     try {

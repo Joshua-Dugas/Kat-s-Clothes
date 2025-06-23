@@ -6,6 +6,7 @@ const homeController = require('../controllers/homeController');
 router.get('/', homeController.getHome);
 
 // Route for managers
+router.get('/costingManager', homeController.getCosting);
 router.get('/shoeManager', homeController.getShoes);
 router.get('/topManager', homeController.getTops);
 router.get('/bottomManager', homeController.getBottoms);

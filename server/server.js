@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require ('cors');
 
 const homeRoutes = require('../src/routes/homeRoutes');
+const costingRoutes = require('../src/routes/costingRoutes');
 const shoesRoutes = require('../src/routes/shoesRoutes');
 const topsRoutes = require('../src/routes/topsRoutes');
 const bottomsRoutes = require('../src/routes/bottomsRoutes');
@@ -26,6 +27,7 @@ app.use(express.static('public'));
 
 // Routes
 app.use('/', homeRoutes);
+app.use('/api/costing', costingRoutes);
 app.use('/api/shoes', shoesRoutes);
 app.use('/api/tops', topsRoutes);
 app.use('/api/bottoms', bottomsRoutes);

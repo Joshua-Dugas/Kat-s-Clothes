@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Costing Manager</title>
+    <link rel="stylesheet" href="/styles/costingManagerStyle.css">
+</head>
+<body>
+<nav class="navbar">
+    <ul>
+        <li><a href="/" class="navbutton">Home</a></li>
+        <li><a href="/costingManager" class="navbutton">Costing</a></li>
+        <li><a href="/shoeManager" class="navbutton">Shoes</a></li>
+        <li><a href="/topManager" class="navbutton">Tops</a></li>
+        <li><a href="/bottomManager" class="navbutton">Bottoms</a></li>
+        <li><a href="/hatManager" class="navbutton">Hats</a></li>
+        <li><a href="/outerWearManager" class="navbutton">Outerwear</a></li>
+        <li><a href="/miscManager" class="navbutton">Misc</a></li>
+    </ul>
+</nav>
+<div class="form-container">
+    <h1>Costing Manager</h1>
+    <div id="error" style="color: red; display: none; text-align: center;"></div>
+    <div id="success" style="color: green; display: none; text-align: center;"></div>
+    <form id="costingForm">
+        <div class="form-row">
+            <label for="table_name">Table Name:</label>
+            <select id="table_name" name="table_name" required>
+                <option value="">Select a table</option>
+                <option value="shoes">Shoes</option>
+                <option value="tops">Tops</option>
+                <option value="pants">Pants</option>
+                <option value="hats">Hats</option>
+                <option value="outerwear">Outerwear</option>
+                <option value="misc">Misc</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="id">Item ID:</label>
+            <input type="number" id="id" name="id" required min="1">
+        </div>
+        <div class="form-row">
+            <label for="item_cost">Item Cost ($):</label>
+            <input type="number" id="item_cost" name="item_cost" step="0.01" min="0">
+        </div>
+        <div class="form-row">
+            <label for="list_price">List Price ($):</label>
+            <input type="number" id="list_price" name="list_price" step="0.01" min="0">
+        </div>
+        <div class="form-row">
+            <button type="submit">Update Costing</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById("costingForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errorDiv = document.getElementById("error");
+        const successDiv = document.getElementById("success");
+        errorDiv.style.display = "none";
+        successDiv.style.display = "none";
+
+        const formData = new FormData(e.target);
+        const data = {
+            table_name: formData.get("table_name"),
+            id: parseInt(formData.get("id")),
+            item_cost: formData.get("item_cost") ? parseFloat(formData.get("item_cost")) : undefined,
+            list_price: formData.get("list_price") ? parseFloat(formData.get("list_price")) : undefined
+        };
+
+        if (!data.item_cost && !data.list_price) {
+            errorDiv.textContent = "Please provide at least one of Item Cost or List Price";
+            errorDiv.style.display = "block";
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/costing/update", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to update costing");
+            }
+
+            successDiv.textContent = result.message;
+            successDiv.style.display = "block";
+            e.target.reset();
+        } catch (err) {
+            errorDiv.textContent = err.message;
+            errorDiv.style.display = "block";
+        }
+    });
+</script>
+</body>
+</html>
