@@ -19,3 +19,7 @@ Home page:
 
 Example Inventory Management Page:
 ![image](https://github.com/user-attachments/assets/f83a78cf-25e9-4144-861f-cf732bf8a1d7)
+
+Costing Page:
+![image](https://github.com/user-attachments/assets/76f8d808-dd21-452f-b5d5-5e183697ceae)
+
