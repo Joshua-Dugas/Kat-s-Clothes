@@ -3,7 +3,7 @@ const router = express.Router();
 const sql = require("../../server/db");
 
 // List of allowed table names to prevent SQL injection
-const allowedTables = ["shoes", "tops", "pants", "hats", "outerwear", "misc"]; // Match your database table names
+const allowedTables = ["shoes", "tops", "bottoms", "hats", "outerwear", "misc"]; // Match your database table names
 
 // Update item_cost or list_price for a specific item
 router.patch("/update", async (req, res) => {
@@ -40,8 +40,8 @@ router.patch("/update", async (req, res) => {
                 exists = await sql`SELECT id FROM shoes WHERE id = ${id}`;
             } else if (table_name === "tops") {
                 exists = await sql`SELECT id FROM tops WHERE id = ${id}`;
-            } else if (table_name === "pants") {
-                exists = await sql`SELECT id FROM pants WHERE id = ${id}`;
+            } else if (table_name === "bottoms") {
+                exists = await sql`SELECT id FROM bottoms WHERE id = ${id}`;
             } else if (table_name === "hats") {
                 exists = await sql`SELECT id FROM hats WHERE id = ${id}`;
             } else if (table_name === "outerwear") {
@@ -96,8 +96,8 @@ router.patch("/update", async (req, res) => {
                 updatedRow = await sql`SELECT * FROM shoes WHERE id = ${id}`;
             } else if (table_name === "tops") {
                 updatedRow = await sql`SELECT * FROM tops WHERE id = ${id}`;
-            } else if (table_name === "pants") {
-                updatedRow = await sql`SELECT * FROM pants WHERE id = ${id}`;
+            } else if (table_name === "bottoms") {
+                updatedRow = await sql`SELECT * FROM bottoms WHERE id = ${id}`;
             } else if (table_name === "hats") {
                 updatedRow = await sql`SELECT * FROM hats WHERE id = ${id}`;
             } else if (table_name === "outerwear") {
