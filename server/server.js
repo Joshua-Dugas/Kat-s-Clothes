@@ -20,7 +20,7 @@ app.set('views', './src/views');
 
 // Middleware
 app.use(cors({
-    origin: 'XXXX', // Allows local network IP
+    origin: `${process.env.URL}`, // Allows local network IP
 }));
 app.use(express.json());
 app.use(express.static('public'));
@@ -38,5 +38,5 @@ app.use('/api/misc', miscRoutes);
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://0.0.0.0:${PORT} and XXXX:${PORT}`);
+    console.log(`Server running on http://0.0.0.0:${PORT} and ${process.env.URL}`);
 });
