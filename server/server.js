@@ -4,12 +4,13 @@ const cors = require ('cors');
 
 const homeRoutes = require('../src/routes/homeRoutes');
 const costingRoutes = require('../src/routes/costingRoutes');
-const shoesRoutes = require('../src/routes/shoesRoutes');
-const topsRoutes = require('../src/routes/topsRoutes');
-const bottomsRoutes = require('../src/routes/bottomsRoutes');
-const hatsRoutes = require('../src/routes/hatsRoutes');
-const outerwearRoutes = require('../src/routes/outerwearRoutes');
-const miscRoutes = require('../src/routes/miscRoutes');
+// const shoesRoutes = require('../src/routes/shoesRoutes');
+// const topsRoutes = require('../src/routes/topsRoutes');
+// const bottomsRoutes = require('../src/routes/bottomsRoutes');
+// const hatsRoutes = require('../src/routes/hatsRoutes');
+// const outerwearRoutes = require('../src/routes/outerwearRoutes');
+// const miscRoutes = require('../src/routes/miscRoutes');
+const inventoryRoutes = require("../src/routes/inventoryRoutes");
 
 dotenv.config();
 const app = express();
@@ -28,12 +29,13 @@ app.use(express.static('public'));
 // Routes
 app.use('/', homeRoutes);
 app.use('/api/costing', costingRoutes);
-app.use('/api/shoes', shoesRoutes);
-app.use('/api/tops', topsRoutes);
-app.use('/api/bottoms', bottomsRoutes);
-app.use('/api/hats', hatsRoutes);
-app.use('/api/outerwear', outerwearRoutes);
-app.use('/api/misc', miscRoutes);
+// app.use('/api/shoes', shoesRoutes);
+// app.use('/api/tops', topsRoutes);
+// app.use('/api/bottoms', bottomsRoutes);
+// app.use('/api/hats', hatsRoutes);
+// app.use('/api/outerwear', outerwearRoutes);
+// app.use('/api/misc', miscRoutes);
+app.use(inventoryRoutes);
 
 // Start server
 const PORT = process.env.PORT || 3000;

@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const homeController = require('../controllers/homeController');
+const inventoryController = require('../controllers/inventoryController');
+
+//Route for generic inventory controller
+router.get('/:typeManager', inventoryController.renderManager);
 
 // Route for homepage
 router.get('/', homeController.getHome);
