@@ -25,7 +25,7 @@
 <div class="form-container">
     <h2>Add New Bottom</h2>
     <form id="addBottomForm">
-        <label for="name">Style:</label>
+        <label for="style">Style:</label>
         <input type="text" id="style" name="style" required><br>
         <label for="brand">Brand:</label>
         <input type="text" id="brand" name="brand" required><br>
@@ -183,7 +183,7 @@
         e.preventDefault();
         const formData = new FormData(e.target);
         const bottomData = {
-            name: formData.get("style"),
+            style: formData.get("style"),
             brand: formData.get("brand"),
             color: formData.get("color"),
             gender: formData.get("gender"),
