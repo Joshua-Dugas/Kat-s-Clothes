@@ -67,21 +67,36 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Update is_sold status
+// Update new_tag or is_sold statuses
 router.patch("/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { is_sold } = req.body;
+        const { is_sold, new_tag } = req.body;
 
-        if (typeof is_sold !== "boolean") {
-            return res.status(400).json({ error: "is_sold must be a boolean value" });
+        // Build dynamic SET clause and values
+        const fields = [];
+        const values = [];
+        let idx = 1;
+
+        if (typeof is_sold === "boolean") {
+            fields.push(`is_sold = $${idx++}`);
+            values.push(is_sold);
+        }
+        if (typeof new_tag === "boolean") {
+            fields.push(`new_tag = $${idx++}`);
+            values.push(new_tag);
         }
 
+        if (fields.length === 0) {
+            return res.status(400).json({ error: "No valid fields to update" });
+        }
+
+        values.push(id); // For WHERE clause
+
         const updateQuery = `
-            UPDATE ${tableName} SET is_sold = $1 WHERE id = $2 RETURNING *
+            UPDATE ${tableName} SET ${fields.join(", ")} WHERE id = $${idx} RETURNING *
         `;
-        const updateValues = [is_sold, id];
-        const result = await sql.query(updateQuery, updateValues);
+        const result = await sql.query(updateQuery, values);
 
         res.status(200).json({
             message: "Status updated successfully",
@@ -92,6 +107,7 @@ router.patch("/:id", async (req, res) => {
         res.status(500).json({ error: "Server Error" });
     }
 });
+
 
 // Delete an item
 router.delete("/:id", async (req, res) => {

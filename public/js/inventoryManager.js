@@ -24,9 +24,12 @@ function setupInventoryManager(itemType, formId, apiPath) {
             const deleteTh = document.createElement("th");
             deleteTh.textContent = "Delete";
             headerRow.appendChild(deleteTh);
-            const updateTh = document.createElement("th");
-            updateTh.textContent = "Update Sold Status";
-            headerRow.appendChild(updateTh);
+            const updateSoldTh = document.createElement("th");
+            updateSoldTh.textContent = "Update Sold Status";
+            headerRow.appendChild(updateSoldTh);
+            const updateTagTh = document.createElement("th");
+            updateTagTh.textContent = "Update New Tag Status";
+            headerRow.appendChild(updateTagTh);
 
             data.forEach(row => {
                 const tr = document.createElement("tr");
@@ -61,10 +64,34 @@ function setupInventoryManager(itemType, formId, apiPath) {
 
                 const updateButton = document.createElement("button");
                 updateButton.textContent = "Update";
-                updateButton.onclick = () => updateItemStatus(row.id);
+                updateButton.onclick = () => updateSoldStatus(row.id);
                 updateTd.appendChild(select);
                 updateTd.appendChild(updateButton);
                 tr.appendChild(updateTd);
+
+                tableBody.appendChild(tr);
+
+                // Update new tag status
+                const updateTagTd = document.createElement("td");
+                const selectTag = document.createElement("select");
+                selectTag.id = `new_tag_${row.id}`;
+                const optionNotTagged = document.createElement("option");
+                optionNotTagged.value = "false";
+                optionNotTagged.textContent = "Not Tagged";
+                if (!row.new_tag) optionNotTagged.selected = true;
+                const optionTagged = document.createElement("option");
+                optionTagged.value = "true";
+                optionTagged.textContent = "Tagged";
+                if (row.new_tag) optionTagged.selected = true;
+                selectTag.appendChild(optionNotTagged);
+                selectTag.appendChild(optionTagged);
+
+                const updateTagButton = document.createElement("button");
+                updateTagButton.textContent = "Update";
+                updateTagButton.onclick = () => updateTagStatus(row.id);
+                updateTagTd.appendChild(selectTag);
+                updateTagTd.appendChild(updateTagButton);
+                tr.appendChild(updateTagTd);
 
                 tableBody.appendChild(tr);
             });
@@ -75,7 +102,28 @@ function setupInventoryManager(itemType, formId, apiPath) {
         }
     }
 
-    async function updateItemStatus(id) {
+    async function updateTagStatus(id) {
+    const selectTag = document.getElementById(`new_tag_${id}`);
+    const new_tag = selectTag.value === "true";
+    try {
+        const response = await fetch(`/api/${apiPath}/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ new_tag }),
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Failed to update ${itemType} tag status`);
+        }
+        alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} tag status updated successfully`);
+        fetchItems();
+    } catch (error) {
+        console.error(`Error updating ${itemType} tag status:`, error);
+        alert(`Error updating ${itemType} tag status: ${error.message}`);
+    }
+}
+
+    async function updateSoldStatus(id) {
         const select = document.getElementById(`is_sold_${id}`);
         const is_sold = select.value === "true";
         try {
