@@ -40,19 +40,22 @@ router.post("/", async (req, res) => {
             size,
             list_price,
             item_cost,
-            is_sold
+            is_sold,
+            date_listed = new Date().toISOString().split("T")[0] // Default to today if not provided
         } = req.body;
 
         if (!style || !brand || !color || !gender || size === undefined || list_price === undefined || item_cost === undefined) {
-            return res.status(400).json({ error: "All fields except is_sold are required" });
-        }
+            return res.status(400).json({ error: "All fields except is_sold and date_listed are required" });
+        }   
+        
+        const finalDateListed = date_listed && date_listed.trim() !== "" ? date_listed : new Date().toISOString().split("T")[0];
 
         const insertQuery = `
-            INSERT INTO ${tableName} (style, brand, color, gender, size, list_price, item_cost, is_sold)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO ${tableName} (style, brand, color, gender, size, list_price, item_cost, is_sold, date_listed)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *
         `;
-        const values = [style, brand, color, gender, size, list_price, item_cost, is_sold ?? false];
+        const values = [style, brand, color, gender, size, list_price, item_cost, is_sold, finalDateListed];
         const result = await sql.query(insertQuery, values);
 
         console.log("Insert result:", result);

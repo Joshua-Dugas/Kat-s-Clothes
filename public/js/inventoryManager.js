@@ -35,7 +35,12 @@ function setupInventoryManager(itemType, formId, apiPath) {
                 const tr = document.createElement("tr");
                 headers.forEach(header => {
                     const td = document.createElement("td");
-                    td.textContent = row[header] ?? "N/A";
+                    let value = row[header];
+                    if (header === "date_listed" && value) {
+                        // Format to YYYY-MM-DD
+                        value = value.slice(0, 10);
+                    }
+                    td.textContent = value ?? "N/A";
                     tr.appendChild(td);
                 });
 
@@ -161,7 +166,7 @@ function setupInventoryManager(itemType, formId, apiPath) {
             alert(`Error deleting ${itemType}: ${error.message}`);
         }
     }
-
+    //item submission
     document.getElementById(formId).addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
