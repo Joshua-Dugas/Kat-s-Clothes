@@ -37,10 +37,39 @@ exports.getHome = async (req, res) => {
             SELECT 'misc' AS table_name, COUNT(*) AS item_count FROM misc;
         `;
 
-        const [financialResult, countsResult] = await Promise.all([
+        const allItemsQuery = `
+            SELECT 'hats' AS category, id, style, brand, date_listed FROM hats WHERE is_sold = false AND date_listed IS NOT NULL
+            UNION ALL
+            SELECT 'bottoms', id, style, brand, date_listed FROM bottoms WHERE is_sold = false AND date_listed IS NOT NULL
+            UNION ALL
+            SELECT 'outerwear', id, style, brand, date_listed FROM outerwear WHERE is_sold = false AND date_listed IS NOT NULL
+            UNION ALL
+            SELECT 'shoes', id, style, brand, date_listed FROM shoes WHERE is_sold = false AND date_listed IS NOT NULL
+            UNION ALL
+            SELECT 'tops', id, style, brand, date_listed FROM tops WHERE is_sold = false AND date_listed IS NOT NULL
+            UNION ALL
+            SELECT 'misc', id, style, brand, date_listed FROM misc WHERE is_sold = false AND date_listed IS NOT NULL;
+        `;
+
+        const [financialResult, countsResult, allItemsResult] = await Promise.all([
             db.query(financialQuery),
-            db.query(countsQuery)
+            db.query(countsQuery),
+            db.query(allItemsQuery)
         ]);
+
+        const allItemsRows = Array.isArray(allItemsResult) ? allItemsResult : allItemsResult.rows;
+
+        // Calculate days listed for each item
+        const today = new Date();
+        const allItemsWithDays = allItemsRows.map(item => {
+            const listedDate = new Date(item.date_listed);
+            const daysListed = Math.floor((today - listedDate) / (1000 * 60 * 60 * 24));
+            return {
+                ...item,
+                days_listed: daysListed
+            };
+        });
+        allItemsWithDays.sort((a, b) => b.days_listed - a.days_listed);
 
         console.log('Financial Query Result:', financialResult);
         console.log('Counts Query Result:', countsResult);
@@ -83,7 +112,8 @@ exports.getHome = async (req, res) => {
             sales: Number(total_sales) || 0,
             expenses: Number(total_expenses) || 0,
             salesVsExpensesDiff,
-            itemCounts
+            itemCounts,
+            allItemsWithDays
         });
     } catch (err) {
         console.error('Error fetching dashboard data:', err.stack);

@@ -118,26 +118,108 @@ h4 {
 .charts-container {
     display: flex;
     justify-content: space-between;
-    gap: 20px;
+    gap: 10px; 
     flex-wrap: wrap;
+    margin-bottom: 10px; 
 }
 
 .chart-wrapper {
     flex: 1;
-    min-width: 250px; /* Slightly reduced min-width for smaller screens */
-    max-width: 450px; /* Slightly reduced max-width to prevent overflow */
-}
-
-.chart-container {
-    position: relative;
-    margin: auto;
-    height: 350px; /* Reduced height to make charts more compact */
-    width: 100%;
+    min-width: 220px;
+    max-width: 400px;
+    margin-bottom: 0; 
 }
 
 .chart-difference {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 5px; 
+    margin-bottom: 0; 
     font-weight: bold;
     color: #333;
+}
+
+.dashboard-table {
+    margin-top: 0.5em; 
+}
+
+.chart-wrapper:last-child {
+    margin-bottom: 0; 
+}
+
+.chart-wrapper + .chart-wrapper {
+    margin-top: 0; 
+}
+
+/* Responsive: Stack charts vertically on small screens */
+@media (max-width: 900px) {
+    .charts-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .chart-wrapper {
+        max-width: 100%;
+        margin-bottom: 10px;
+        
+    }
+}
+
+/* Items by date styles*/
+#items-by-date-container {
+    max-height: 400px; /* Set a fixed height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrollbar */
+    border-radius: 8px; /* Match table's border-radius */
+}
+
+.items-by-date-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: linear-gradient(90deg, #f8fafc 0%, #e3f0ff 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-radius: 8px;
+    font-size: 1rem;
+    animation: fadeIn 0.8s;
+}
+
+.items-by-date-table th, .items-by-date-table td {
+    padding: 0.75em 1em;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+.items-by-date-table th {
+    background: #007BFF;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #0056b3;
+    position: sticky; /* Keep header fixed at the top when scrolling */
+    top: 0; /* Stick to the top of the container */
+    z-index: 1; /* Ensure header stays above table content */
+}
+
+.items-by-date-table tbody tr:nth-child(even) {
+    background: #f0f6ff;
+}
+
+.items-by-date-table tbody tr:hover {
+    background: #e3f0ff;
+    transition: background 0.2s;
+}
+
+.items-by-date-table td.days-listed {
+    font-weight: bold;
+    color: #007BFF;
+    text-align: center;
+    background: #eaf6ff;
+    border-radius: 4px;
+}
+
+.items-by-date-table td.category {
+    font-weight: 600;
+    color: #FF6B6B;
+}
+
+.items-by-date-table td.date-listed {
+    font-family: 'Roboto Mono', monospace;
+    color: #555;
 }
