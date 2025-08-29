@@ -162,15 +162,35 @@ h4 {
         
     }
 }
+/* This might seem redundant but it keeps the lower half of the dashboard in line with the upper*/
+.dashboard-tables-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.dashboard-tables-row .chart-wrapper {
+    flex: 1 1 0;
+    max-width: 50%;
+}
+/* Responsive: Stack vertically on small screens */
+@media (max-width: 900px) {
+    .dashboard-tables-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .dashboard-tables-row .chart-wrapper {
+        max-width: 100%;
+    }
+}
 
-/* Items by date styles*/
-#items-by-date-container {
+/* Items by date & item loss styles*/
+.items-data-container {
     max-height: 400px; /* Set a fixed height for the scrollable area */
     overflow-y: auto; /* Enable vertical scrollbar */
     border-radius: 8px; /* Match table's border-radius */
 }
 
-.items-by-date-table {
+.items-data-table {
     width: 100%;
     border-collapse: collapse;
     background: linear-gradient(90deg, #f8fafc 0%, #e3f0ff 100%);
@@ -180,13 +200,13 @@ h4 {
     animation: fadeIn 0.8s;
 }
 
-.items-by-date-table th, .items-by-date-table td {
+.items-data-table th, .items-data-table td {
     padding: 0.75em 1em;
     border-bottom: 1px solid #e0e0e0;
     text-align: left;
 }
 
-.items-by-date-table th {
+.items-data-table th {
     background: #007BFF;
     color: #fff;
     font-weight: 600;
@@ -197,16 +217,16 @@ h4 {
     z-index: 1; /* Ensure header stays above table content */
 }
 
-.items-by-date-table tbody tr:nth-child(even) {
+.items-data-table tbody tr:nth-child(even) {
     background: #f0f6ff;
 }
 
-.items-by-date-table tbody tr:hover {
+.items-data-table tbody tr:hover {
     background: #e3f0ff;
     transition: background 0.2s;
 }
 
-.items-by-date-table td.days-listed {
+.items-data-table td.days-listed {
     font-weight: bold;
     color: #007BFF;
     text-align: center;
@@ -214,12 +234,12 @@ h4 {
     border-radius: 4px;
 }
 
-.items-by-date-table td.category {
+.items-data-table td.category {
     font-weight: 600;
     color: #FF6B6B;
 }
 
-.items-by-date-table td.date-listed {
+.items-data-table td.date-listed {
     font-family: 'Roboto Mono', monospace;
     color: #555;
 }

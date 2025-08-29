@@ -59,11 +59,12 @@
             </p>
         </div>
     </div>
+<div class="dashboard-tables-row">
     <!-- All Items & Days Listed Table -->
 <div class="chart-wrapper">
     <h4>Unsold Items by List Date</h4>
-    <div id="items-by-date-container" class="chart-container" style="overflow-x:auto;">
-        <table class="dashboard-table items-by-date-table">
+    <div id="items-data-container" class="chart-container" style="overflow-x:auto;">
+        <table class="dashboard-table items-data-table">
             <thead>
                 <tr>
                     <th>Style</th>
@@ -87,6 +88,39 @@
                 <% } %>
             </tbody>
         </table>
+    </div>
+</div>
+    <!-- Item Lost Sales Table -->
+<div class="chart-wrapper">
+    <h4>Item Lost Sales</h4>
+        <div class="items-data-container chart-container" style="overflow-x: auto;">
+            <table class="dashboard-table items-data-table">
+                <thead>
+                    <tr>
+                        <th>Style</th>
+                        <th>Brand</th>
+                        <th>List Price</th>
+                        <th>Item Cost</th>
+                        <th>Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (typeof itemLossData !== 'undefined' && itemLossData.length > 0) { %>
+                        <% itemLossData.forEach(item => { %>
+                            <tr>
+                                <td><%= item.style %></td>
+                                <td><%= item.brand %></td>
+                                <td><%= item.list_price %></td>
+                                <td><%= item.item_cost %></td>
+                                <td><%= item.list_price - item.item_cost %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="4">No items found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>        
     </div>
 </div>
 </section>

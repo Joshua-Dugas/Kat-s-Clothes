@@ -51,13 +51,31 @@ exports.getHome = async (req, res) => {
             SELECT 'misc', id, style, brand, date_listed FROM misc WHERE is_sold = false AND date_listed IS NOT NULL;
         `;
 
-        const [financialResult, countsResult, allItemsResult] = await Promise.all([
+        const itemLossQuery = `
+            SELECT 'hats' AS category, id, style, brand, list_price, item_cost FROM hats WHERE is_sold = true
+            AND list_price < item_cost UNION ALL
+            SELECT 'bottoms', id, style, brand, list_price, item_cost FROM bottoms WHERE is_sold = true
+            AND list_price < item_cost UNION ALL
+            SELECT 'outerwear', id, style, brand, list_price, item_cost FROM outerwear WHERE is_sold = true
+            AND list_price < item_cost UNION ALL
+            SELECT 'shoes', id, style, brand, list_price, item_cost FROM shoes WHERE is_sold = true
+            AND list_price < item_cost UNION ALL
+            SELECT 'tops', id, style, brand, list_price, item_cost FROM tops WHERE is_sold = true
+            AND list_price < item_cost UNION ALL
+            SELECT 'misc', id, style, brand, list_price, item_cost FROM misc WHERE is_sold = true
+            AND list_price < item_cost;
+        `;
+
+        const [financialResult, countsResult, allItemsResult, itemLossResult] = await Promise.all([
             db.query(financialQuery),
             db.query(countsQuery),
-            db.query(allItemsQuery)
+            db.query(allItemsQuery),
+            db.query(itemLossQuery)
         ]);
-
+        const itemLossData = Array.isArray(itemLossResult) ? itemLossResult : itemLossResult.rows;
         const allItemsRows = Array.isArray(allItemsResult) ? allItemsResult : allItemsResult.rows;
+
+        
 
         // Calculate days listed for each item
         const today = new Date();
@@ -113,7 +131,8 @@ exports.getHome = async (req, res) => {
             expenses: Number(total_expenses) || 0,
             salesVsExpensesDiff,
             itemCounts,
-            allItemsWithDays
+            allItemsWithDays,
+            itemLossData
         });
     } catch (err) {
         console.error('Error fetching dashboard data:', err.stack);
