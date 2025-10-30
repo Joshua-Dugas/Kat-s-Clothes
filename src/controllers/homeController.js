@@ -66,20 +66,22 @@ exports.getHome = async (req, res) => {
             AND list_price < item_cost;
         `;
 
-        const [financialResult, countsResult, allItemsResult, itemLossResult] = await Promise.all([
+        
+        const [
+            [financialRows],
+            [countRows],
+            [allItemsRows],
+            [itemLossData]
+        ] = await Promise.all([
             db.query(financialQuery),
             db.query(countsQuery),
             db.query(allItemsQuery),
             db.query(itemLossQuery)
         ]);
-        const itemLossData = Array.isArray(itemLossResult) ? itemLossResult : itemLossResult.rows;
-        const allItemsRows = Array.isArray(allItemsResult) ? allItemsResult : allItemsResult.rows;
-
-        
 
         // Calculate days listed for each item
         const today = new Date();
-        const allItemsWithDays = allItemsRows.map(item => {
+        const allItemsWithDays = allItemsRows.map(item => { 
             const listedDate = new Date(item.date_listed);
             const daysListed = Math.floor((today - listedDate) / (1000 * 60 * 60 * 24));
             return {
@@ -89,21 +91,16 @@ exports.getHome = async (req, res) => {
         });
         allItemsWithDays.sort((a, b) => b.days_listed - a.days_listed);
 
-        console.log('Financial Query Result:', financialResult);
-        console.log('Counts Query Result:', countsResult);
+        console.log('Financial Query Result (Rows Only):', financialRows);
+        console.log('Counts Query Result (Rows Only):', countRows);
 
-        // Handle financial result
-        const rows = Array.isArray(financialResult) ? financialResult : financialResult.rows;
-
-        const { total_sales, total_expenses } = rows.length > 0
-            ? rows[0]
+        // Handle financial result (financialRows is clean)
+        const { total_sales, total_expenses } = financialRows.length > 0
+            ? financialRows[0]
             : { total_sales: 0, total_expenses: 0 };
 
         // Calculate sales vs expenses difference
         const salesVsExpensesDiff = Number(total_sales) - Number(total_expenses);
-
-        // Handle counts result
-        const countRows = Array.isArray(countsResult) ? countsResult : countsResult.rows;
 
         // Transform counts into an object for easier access in EJS
         const itemCounts = {
@@ -114,7 +111,7 @@ exports.getHome = async (req, res) => {
             tops: 0,
             misc: 0
         };
-        countRows.forEach(row => {
+        countRows.forEach(row => { 
             itemCounts[row.table_name] = Number(row.item_count) || 0;
         });
 
@@ -132,7 +129,7 @@ exports.getHome = async (req, res) => {
             salesVsExpensesDiff,
             itemCounts,
             allItemsWithDays,
-            itemLossData
+            itemLossData 
         });
     } catch (err) {
         console.error('Error fetching dashboard data:', err.stack);
@@ -142,6 +139,8 @@ exports.getHome = async (req, res) => {
             expenses: 0,
             salesVsExpensesDiff: 0,
             itemCounts: { hats: 0, bottoms: 0, outerwear: 0, shoes: 0, tops: 0, misc: 0 },
+            allItemsWithDays: [],
+            itemLossData: [],
             error: 'Failed to load dashboard data: ' + err.message
         });
     }

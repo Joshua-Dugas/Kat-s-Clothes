@@ -1,6 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const cors = require ('cors');
+const cors = require('cors');
+
+
+dotenv.config();
+//Imports the database pool configured in your dj,js
+const pool = require('./db');
+// ----------------------------------
 
 const homeRoutes = require('../src/routes/homeRoutes');
 const costingRoutes = require('../src/routes/costingRoutes');
@@ -12,7 +18,6 @@ const costingRoutes = require('../src/routes/costingRoutes');
 // const miscRoutes = require('../src/routes/miscRoutes');
 const inventoryRoutes = require("../src/routes/inventoryRoutes");
 
-dotenv.config();
 const app = express();
 
 // Set EJS as the view engine
@@ -41,4 +46,6 @@ app.use(inventoryRoutes);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://0.0.0.0:${PORT} and ${process.env.URL}`);
+
+    console.log("Database pool successfully initialized.");
 });

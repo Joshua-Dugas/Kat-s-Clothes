@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const sql = require("../../server/db");
+const sql = require("../../server/db"); 
 
 // List of allowed table names to prevent SQL injection
 const allowedTables = ["shoes", "tops", "bottoms", "hats", "outerwear", "misc"]; // Match your database table names
@@ -33,92 +33,73 @@ router.patch("/update", async (req, res) => {
             return res.status(400).json({ error: "List price must be a non-negative number" });
         }
 
-        // Check if the record exists
-        let exists;
+       
+        let existsRows;
         try {
-            if (table_name === "shoes") {
-                exists = await sql`SELECT id FROM shoes WHERE id = ${id}`;
-            } else if (table_name === "tops") {
-                exists = await sql`SELECT id FROM tops WHERE id = ${id}`;
-            } else if (table_name === "bottoms") {
-                exists = await sql`SELECT id FROM bottoms WHERE id = ${id}`;
-            } else if (table_name === "hats") {
-                exists = await sql`SELECT id FROM hats WHERE id = ${id}`;
-            } else if (table_name === "outerwear") {
-                exists = await sql`SELECT id FROM outerwear WHERE id = ${id}`;
-            } else if (table_name === "misc") {
-                exists = await sql`SELECT id FROM misc WHERE id = ${id}`;
-            }
+            const [rows] = await sql.query(`SELECT id FROM ${table_name} WHERE id = ?`, [id]);
+            existsRows = rows;
             console.log("Executing existence check for table:", table_name, "with id:", id);
-            console.log("Existence check result:", exists);
+            console.log("Existence check result:", existsRows);
         } catch (queryErr) {
             console.error("Existence check error:", queryErr);
             throw new Error(`Failed to check existence: ${queryErr.message}`);
         }
-        if (!exists || exists.length === 0) {
+        
+        if (!existsRows || existsRows.length === 0) {
             return res.status(404).json({ error: `Record with ID ${id} not found in table ${table_name}` });
         }
 
         // Build update query dynamically
         const updates = [];
         const values = [];
+        
         if (item_cost !== undefined) {
-            updates.push(`item_cost = $${values.length + 1}`);
+            updates.push(`item_cost = ?`);
             values.push(item_cost);
         }
         if (list_price !== undefined) {
-            updates.push(`list_price = $${values.length + 1}`);
+            updates.push(`list_price = ?`);
             values.push(list_price);
         }
-        values.push(id);
+        values.push(id); // ID goes last for the WHERE clause
 
         const updateQuery = `
-            UPDATE "${table_name}"
+            UPDATE ${table_name}
             SET ${updates.join(", ")}
-            WHERE id = $${values.length}
-            RETURNING *
+            WHERE id = ?
         `;
         console.log("Executing query:", updateQuery, "with values:", values);
+        
         let result;
         try {
             result = await sql.query(updateQuery, values);
             console.log("Raw update query result:", result);
-            console.log("Update query rows:", result ? result.rows : "null or undefined");
         } catch (queryErr) {
             console.error("Update query error:", queryErr);
             throw new Error(`Failed to update: ${queryErr.message}`);
         }
 
-        // Fallback: Query the updated row to confirm the change
         let updatedRow;
         try {
-            if (table_name === "shoes") {
-                updatedRow = await sql`SELECT * FROM shoes WHERE id = ${id}`;
-            } else if (table_name === "tops") {
-                updatedRow = await sql`SELECT * FROM tops WHERE id = ${id}`;
-            } else if (table_name === "bottoms") {
-                updatedRow = await sql`SELECT * FROM bottoms WHERE id = ${id}`;
-            } else if (table_name === "hats") {
-                updatedRow = await sql`SELECT * FROM hats WHERE id = ${id}`;
-            } else if (table_name === "outerwear") {
-                updatedRow = await sql`SELECT * FROM outerwear WHERE id = ${id}`;
-            } else if (table_name === "misc") {
-                updatedRow = await sql`SELECT * FROM misc WHERE id = ${id}`;
-            }
-            console.log("Fallback query result:", updatedRow);
+            const [rows] = await sql.query(`SELECT * FROM ${table_name} WHERE id = ?`, [id]);
+            updatedRow = rows;
+            console.log("Post-update fetch query result:", updatedRow);
         } catch (queryErr) {
-            console.error("Fallback query error:", queryErr);
+            console.error("Post-update fetch query error:", queryErr);
             throw new Error(`Failed to verify update: ${queryErr.message}`);
         }
 
         if (!updatedRow || updatedRow.length === 0) {
-            return res.status(404).json({ error: `Update failed for ID ${id} in table ${table_name}` });
+            // This case should be rare if the update succeeded, but acts as a final safeguard.
+            return res.status(404).json({ error: `Update failed or record disappeared for ID ${id} in table ${table_name}` });
         }
 
+        // Return the first row from the fetch query
         res.json({ message: "Costing updated successfully", updatedItem: updatedRow[0] });
     } catch (err) {
         console.error("Error executing query:", err);
-        res.status(500).send(`Server Error: ${err.message}`);
+        // Ensure error message is safe for client
+        res.status(500).send(`Server Error: Failed to process update request.`);
     }
 });
 
