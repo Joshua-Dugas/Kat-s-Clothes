@@ -90,9 +90,9 @@ exports.getHome = async (req, res) => {
             };
         });
         allItemsWithDays.sort((a, b) => b.days_listed - a.days_listed);
-
-        console.log('Financial Query Result (Rows Only):', financialRows);
-        console.log('Counts Query Result (Rows Only):', countRows);
+		console.log('Unsold Items Query Result:' , allItemsWithDays);
+        console.log('Financial Query Result:', financialRows);
+        console.log('Counts Query Result:', countRows);
 
         // Handle financial result (financialRows is clean)
         const { total_sales, total_expenses } = financialRows.length > 0
