@@ -5,17 +5,22 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
+/* Table Styling */
 table {
     width: 80%;
     margin: 20px auto;
     border-collapse: collapse;
+    max-width: 100%;
 }
 th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    word-wrap: break-word;
 }
 th {
     background-color: #f2f2f2;
@@ -23,22 +28,28 @@ th {
 h1 {
     text-align: center;
 }
+
+/* Button Styling */
 button {
     padding: 5px 10px;
     background-color: #ff4d4d;
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
 }
 button:hover {
     background-color: #cc0000;
 }
+
+/* Form Styling */
 .form-container {
     width: 30%;
     margin: 20px auto;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ddd;
     backdrop-filter: blur(10px);
+    border-radius: 8px;
 }
 .form-container label {
     display: inline-block;
@@ -46,6 +57,7 @@ button:hover {
     margin-bottom: 10px;
 }
 .form-container input, .form-container select {
+    width: calc(100% - 110px);
     margin-bottom: 10px;
     padding: 5px;
 }
@@ -56,11 +68,13 @@ button:hover {
     background-color: #45a049;
 }
 
+/* Table Body */
 #tableBody {
     color: black;
     backdrop-filter: blur(10px);
 }
 
+/* Home Button */
 .homeButton {
     display: inline-block;
     padding: 10px 20px;
@@ -68,22 +82,13 @@ button:hover {
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    text-align: center;
 }
 .homeButton:hover {
     background-color: #0056b3;
 }
 
-/* Vertical navbar styling */
-
-.navbutton {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-}
-
+/* Navbar Styling */
 .navbar {
     width: 100px;
     background-color: transparent;
@@ -93,15 +98,20 @@ button:hover {
     left: 0;
 }
 
+.navbutton{
+	background-color: #007bff;
+	color: white;
+	border-radius: 5px
+}
+
 .navbar ul {
     list-style: none;
     padding: 10px 0;
+    margin: 0;
 }
-
 .navbar li {
     margin: 10px 0;
 }
-
 .navbar a {
     display: block;
     padding: 15px 20px;
@@ -110,15 +120,96 @@ button:hover {
     font-size: 16px;
     transition: background-color 0.3s;
 }
-
 .navbar a:hover {
     background-color: #555;
 }
 
-#is_sold_btn{
+#is_sold_btn {
     background-color: #4CAF50;
     color: white;
     margin: 20px auto;
     padding: 10px;
+}
+
+
+/* For tablets and small laptops */
+@media (max-width: 992px) {
+    table {
+        width: 90%;
+    }
+
+    .form-container {
+        width: 50%;
+    }
+
+    .navbar {
+        width: 80px;
+    }
+
+    .navbar a {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* For mobile phones */
+@media (max-width: 600px) {
+    body {
+        background-attachment: scroll; 
+    }
+
+    .navbar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .navbar ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .navbar li {
+        margin: 0;
+    }
+
+    .navbar a {
+        font-size: 14px;
+        padding: 10px 5px;
+    }
+
+    .form-container {
+        width: 90%;
+        padding: 10px;
+    }
+
+    .form-container label {
+        width: 100%;
+    }
+
+    .form-container input,
+    .form-container select {
+        width: 100%;
+    }
+
+    table {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 6px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    button, .homeButton {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
 

@@ -73,22 +73,46 @@ h4 {
     margin-bottom: 10px;
 }
 
-/* Navbar Styles*/
+/*Base Navbar Styles (Desktop & Default) */
 .navbar {
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: center;   
+    align-items: center;
     margin: 20px 0 40px 0;
 }
 
 .navbar ul {
     list-style-type: none;
     padding: 0;
-    display: flex;
-    gap: 10px;
+    margin: 0;
+    display: flex;             
+    flex-direction: row;
+    gap: 10px;                 
+    align-items: center;
+    justify-content: center;   
+    text-align: center;
 }
 
 .navbar li {
-    display: inline;
+    display: inline;           
+}
+
+/*Mobile adjustment*/
+@media (max-width:900px) {
+    .navbar {
+        flex-wrap: wrap;       
+        margin: 20px 0;
+    }
+
+    .navbar ul {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .navbar li {
+        display: inline;
+    }
 }
 
 .button {
@@ -185,9 +209,9 @@ h4 {
 
 /* Items by date & item loss styles*/
 .items-data-container {
-    max-height: 400px; /* Set a fixed height for the scrollable area */
-    overflow-y: auto; /* Enable vertical scrollbar */
-    border-radius: 8px; /* Match table's border-radius */
+    max-height: 400px; 
+    overflow-y: auto; 
+    border-radius: 8px;
 }
 
 .items-data-table {
@@ -212,9 +236,9 @@ h4 {
     font-weight: 600;
     letter-spacing: 0.5px;
     border-bottom: 2px solid #0056b3;
-    position: sticky; /* Keep header fixed at the top when scrolling */
-    top: 0; /* Stick to the top of the container */
-    z-index: 1; /* Ensure header stays above table content */
+    position: sticky; 
+    top: 0; 
+    z-index: 1; 
 }
 
 .items-data-table tbody tr:nth-child(even) {
