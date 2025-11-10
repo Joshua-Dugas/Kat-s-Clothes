@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
             size,
             list_price,
             item_cost,
-            is_sold,
+            is_sold = 0,
             date_listed = new Date().toISOString().split("T")[0]
         } = req.body;
 

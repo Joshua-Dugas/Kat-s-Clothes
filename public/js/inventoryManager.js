@@ -40,6 +40,11 @@ function setupInventoryManager(itemType, formId, apiPath) {
                         // Format to YYYY-MM-DD
                         value = value.slice(0, 10);
                     }
+                    if (header === "is_sold" || header === "new_tag") {
+                        td.textContent = value == 1 ? "true" : "false";
+                        td.style.fontWeight = "bold";
+                        td.style.color = value == 1 ? "green" : "red";
+                    } 
                     td.textContent = value ?? "N/A";
                     tr.appendChild(td);
                 });
