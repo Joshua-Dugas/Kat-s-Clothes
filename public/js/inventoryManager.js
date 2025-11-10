@@ -40,12 +40,15 @@ function setupInventoryManager(itemType, formId, apiPath) {
                         // Format to YYYY-MM-DD
                         value = value.slice(0, 10);
                     }
+					//With the mysql conversion we need to convert 0/1 to true/false
                     if (header === "is_sold" || header === "new_tag") {
-                        td.textContent = value == 1 ? "true" : "false";
-                        td.style.fontWeight = "bold";
-                        td.style.color = value == 1 ? "green" : "red";
-                    } 
-                    td.textContent = value ?? "N/A";
+						const boolVal = (value === 1 || value === "1" || value === true);
+						td.textContent = boolVal ? "true" : "false";
+						td.style.fontWeight = "bold";
+						td.style.color = boolVal ? "green" : "red";
+					} else{
+						td.textContent = value ?? "N/A";
+					}
                     tr.appendChild(td);
                 });
 
